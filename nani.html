@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Election Guide AI</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(120deg, #2c3e50, #4ca1af);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main Card */
+.app {
+    width: 420px;
+    height: 620px;
+    background: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Chat Area */
+#chat {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Card Message */
+.card {
+    background: #ecf0f1;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.user {
+    background: #3498db;
+    color: white;
+    text-align: right;
+}
+
+/* Input */
+.inputBox {
+    display: flex;
+    padding: 10px;
+    background: #ddd;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+button {
+    margin-left: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #2c3e50;
+    color: white;
+    cursor: pointer;
+}
+
+/* Quick buttons */
+.quick {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.quick button {
+    background: #4ca1af;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+    <div class="header">🗳 Election Guide AI</div>
+
+    <div class="quick">
+        <button onclick="quick('process')">Process</button>
+        <button onclick="quick('timeline')">Timeline</button>
+        <button onclick="quick('voting')">Voting</button>
+        <button onclick="quick('eligibility')">Eligibility</button>
+    </div>
+
+    <div id="chat"></div>
+
+    <div class="inputBox">
+        <input id="input" placeholder="Ask anything...">
+        <button onclick="send()">Send</button>
+        <button onclick="voice()">🎤</button>
+    </div>
+</div>
+
+<script>
+
+/* Welcome message */
+window.onload = () => {
+    addMsg("Hello 👋 I will guide you about elections.\nAsk anything!", "bot");
+};
+
+/* Send */
+function send(){
+    let input = document.getElementById("input");
+    let text = input.value.trim();
+    if(!text) return;
+
+    addMsg(text, "user");
+    input.value = "";
+
+    setTimeout(()=>{
+        let reply = ai(text);
+        addMsg(reply, "bot");
+    }, 400);
+}
+
+/* Quick */
+function quick(text){
+    document.getElementById("input").value = text;
+    send();
+}
+
+/* Add message */
+function addMsg(text, type){
+    let chat = document.getElementById("chat");
+    let div = document.createElement("div");
+    div.className = "card " + (type === "user" ? "user" : "");
+    div.innerText = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+/* AI Brain */
+function ai(q){
+    q = q.toLowerCase();
+
+    if(q.includes("process")){
+        return "🗳 Election Process:\n\n1. Announcement\n2. Nomination\n3. Campaign\n4. Voting\n5. Counting\n6. Results";
+    }
+
+    if(q.includes("timeline")){
+        return "📅 Timeline:\n\nAnnouncement → Nomination → Campaign → Voting → Result";
+    }
+
+    if(q.includes("voting")){
+        return "🗳 Voting Info:\n\n• Must be 18+\n• Use EVM\n• Go to polling booth";
+    }
+
+    if(q.includes("eligibility")){
+        return "✅ Eligibility:\n\n• Age 18+\n• Indian citizen\n• Registered voter";
+    }
+
+    if(q.includes("evm")){
+        return "EVM (Electronic Voting Machine) is used for secure and fast voting in India.";
+    }
+
+    if(q.includes("who conducts")){
+        return "Elections are conducted by the Election Commission of India.";
+    }
+
+    return "I can answer about election process, voting, timeline, eligibility, and more 😊";
+}
+
+/* Voice */
+function voice(){
+    let rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.onresult = (e)=>{
+        document.getElementById("input").value = e.results[0][0].transcript;
+        send();
+    };
+    rec.start();
+}
+
+</script>
+
+</body>
+</html>
